@@ -14,7 +14,9 @@ jobs:
             echo "Npm v$(npm -v)"
       - run:
           name: Install dependencies
+          working_directory: src
           command: npm install --no-progress
       - run:
           name: Test
+          working_directory: src
           command: npm test
