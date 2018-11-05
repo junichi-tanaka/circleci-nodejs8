@@ -1,10 +1,21 @@
 version: 2
-jobs:
-  build:
+
+references:
+  container_config: &container_config
     working_directory: ~/repo
     docker:
       - image: circleci/node:8
 
+  workspace_root: &workspace_root
+    /tmp/workspace
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+jobs:
+  build:
+    <<: *container_config
     steps:
       - checkout
       - run:
@@ -19,4 +30,16 @@ jobs:
       - run:
           name: Test
           working_directory: src
-          command: npm test
+          command: npm test -- --coverage
+      - store_artifacts:
+          path: src/coverage
+          destination: coverage
+
+  deploy:
+    <<: *container_config
+    steps:
+      - checkout
+      - run:
+          name: Execute deploy command
+          command: |
+            echo ${CIRCLE_BRANCH}
