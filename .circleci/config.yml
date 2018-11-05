@@ -34,21 +34,10 @@ jobs:
       - store_artifacts:
           path: src/coverage
           destination: coverage
-
-  deploy:
-    <<: *container_config
-    steps:
-      - checkout
       - run:
           name: Execute deploy command
           command: |
             echo ${CIRCLE_BRANCH}
-
-workflows:
-  version: 2
-  build-test-and-deploy:
-    jobs:
-      - build
-      - deploy:
-          requires:
-            - build
+          filters:
+            branches:
+              only: master
